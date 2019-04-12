@@ -29,7 +29,7 @@ class ConnectionPool:
         self._cap = cap
         self._threads = []
         self._jobids = set()
-        self._completed_wait_time = 0.5
+        self._completed_wait_time = 0.05
 
         # next we initialize the thread pool
         for i in range(cap):
@@ -62,6 +62,7 @@ class ConnectionPool:
         # then create the job in the jobQ
         self._jobq.put((jid, fn, args))
         # and return the job id
+        print(f'Job {jid} submitted')
         return jid
 
     def as_completed(self, jobs):
@@ -96,7 +97,6 @@ class ConnectionPool:
             work = self._jobq.get()
             # now let's do some work
             jobid, fn, args = work
-            print(f'{current_thread().name} picked up job {jobid}')
             resp = fn(*args)
             # and store the response
             with self._resplock:
@@ -107,11 +107,10 @@ def test():
     def func(lbl):
         print(f'entering function func {lbl}')
         # sleep for some time
-        time.sleep(1.3)
+        time.sleep(1.0 + random.random())
         # wake up
-        print(f'time for some cofee {lbl}')
         # and return some response
-        return 2 ** lbl
+        return lbl
 
     # create the connection pool
     pool = ConnectionPool(5)
