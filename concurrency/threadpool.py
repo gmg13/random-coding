@@ -2,7 +2,7 @@ import random
 import time
 
 from queue import Queue
-from threading import Lock, Thread, current_thread
+from threading import Lock, Thread
 # from weakref import WeakKeyDictionary
 
 MAXQSIZE = 50
